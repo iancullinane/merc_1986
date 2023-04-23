@@ -11,7 +11,10 @@ const JUMP_VELOCITY = 4.5
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var walking = false
 
+var env_checker 
+
 func _ready():
+	env_checker = $visuals/player/RayCast3D
 	GameManager.set_player(self)
 	animation_player.set_blend_time("idle", "walk", 0.2)
 	animation_player.set_blend_time("walk", "idle" , 0.2)
@@ -21,8 +24,10 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-#	if $RayCast3D.is_colliding():
-#		print("npc in front of player")
+	# Handle Jump.
+	if Input.is_action_just_pressed("interact") and env_checker.is_colliding():
+		var collider = env_checker.get_collider()
+		print(collider)
 
 	# Handle Jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
